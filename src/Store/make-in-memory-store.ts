@@ -1,8 +1,7 @@
-import type KeyedDB from '@adiwajshing/keyed-db'
 import type { Comparable } from '@adiwajshing/keyed-db/lib/Types'
 import { createHash } from 'crypto'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { createRequire } from 'module'
+import KeyedDBPkg from '@adiwajshing/keyed-db'
 import { proto } from '../../WAProto/index.js'
 import { DEFAULT_CONNECTION_CONFIG } from '../Defaults'
 import type makeWASocket from '../Socket'
@@ -62,20 +61,15 @@ export default (config: BaileysInMemoryStoreConfig) => {
 	const chatKey = config.chatKey || waChatKey(true)
 	const labelAssociationKey = config.labelAssociationKey || waLabelAssociationKey
 	const logger = (config.logger || DEFAULT_CONNECTION_CONFIG.logger).child({ stream: 'in-mem-store' })
-	const require = createRequire(import.meta.url)
-	const KeyedDB = require('@adiwajshing/keyed-db').default
-
-	const chats = new KeyedDB(chatKey, (c: Chat) => c.id) as KeyedDB<Chat, string>
+	const KeyedDB = (KeyedDBPkg as unknown as { default?: typeof KeyedDBPkg }).default || KeyedDBPkg
+	const chats = new KeyedDB(chatKey, (c: Chat) => c.id)
 	const messages: { [_: string]: ReturnType<typeof makeMessagesDictionary> } = {}
 	const contacts: { [_: string]: Contact } = {}
 	const groupMetadata: { [_: string]: GroupMetadata } = {}
 	const presences: { [id: string]: { [participant: string]: PresenceData } } = {}
 	const state: ConnectionState = { connection: 'close' }
 	const labels = new ObjectRepository<Label>()
-	const labelAssociations = new KeyedDB(labelAssociationKey, labelAssociationKey.key) as KeyedDB<
-		LabelAssociation,
-		string
-	>
+	const labelAssociations = new KeyedDB(labelAssociationKey, labelAssociationKey.key)
 
 	const assertMessageList = (jid: string) => {
 		if (!messages[jid]) {
@@ -436,7 +430,7 @@ export default (config: BaileysInMemoryStoreConfig) => {
 				})
 				.all()
 
-			return associations.map(association => association.labelId)
+			return (associations as MessageLabelAssociation[]).map(association => association.labelId)
 		},
 		loadMessage: async (jid: string, id: string) => messages[jid]?.get(id),
 		mostRecentMessage: async (jid: string) => {

@@ -13,16 +13,8 @@
   },
   "license": "MIT",
   "author": "gilangf3000",
-  "main": "lib/cjs/index.js",
-  "module": "lib/index.js",
+  "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./lib/index.d.ts",
-      "import": "./lib/index.js",
-      "require": "./lib/cjs/index.js"
-    }
-  },
   "files": [
     "lib/**/*",
     "WAProto/**/*",
@@ -31,9 +23,7 @@
   "scripts": {
     "build:all": "npm run build && npm run build:docs",
     "build:docs": "typedoc",
-    "build:esm": "tsc -P tsconfig.build.json && tsc-esm-fix --tsconfig=tsconfig.build.json --ext=.js",
-    "build:cjs": "tsc -P tsconfig.build.cjs.json && node scripts/prepare-cjs.js",
-    "build": "npm run build:esm && npm run build:cjs",
+    "build": "tsc -P tsconfig.build.json && tsc-esm-fix --tsconfig=tsconfig.build.json --ext=.js",
     "changelog:last": "conventional-changelog -p angular -r 2",
     "changelog:preview": "conventional-changelog -p angular -u",
     "changelog:update": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",

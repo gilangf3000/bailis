@@ -142,9 +142,8 @@ const buffer = await downloadMediaMessage(msg, 'buffer')
 npm run build
 ```
 
-Bailis mendukung build ESM dan CJS:
-- ESM: `lib/index.js`
-- CJS: `lib/cjs/index.js`
+Bailis menggunakan build ESM:
+- `lib/index.js`
 
 ## Lisensi
 
