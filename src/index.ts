@@ -1,0 +1,15 @@
+import makeWASocket, { makeWASocketLite } from './Socket/index'
+
+export * from '../WAProto/index.js'
+export * from './Utils/index'
+export * from './Types/index'
+export * from './Store'
+export * from './Defaults/index'
+export * from './WABinary/index'
+export * from './WAM/index'
+export * from './WAUSync/index'
+
+export type WASocket = ReturnType<typeof makeWASocket>
+export { makeWASocket }
+export { makeWASocketLite }
+export default makeWASocket
